@@ -1,12 +1,14 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
-from backend.app.api.database import declarative_base
+from sqlalchemy.orm import declarative_base
 from datetime import datetime
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = "user"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(100), nullable=False)
     role = Column(String(50), nullable=False)
     phone = Column(String(20), nullable=False)
@@ -21,7 +23,11 @@ class FoodPost(Base):
     quantity = Column(Integer, nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    status = Column(String(20), nullable=False, default="AVAILABLE")  # AVAILABLE / CLAIMED / DISTRIBUTED
-    posted_by = Column(Integer, nullable=False)  # user_id of donor
-    created_at = Column(DateTime, default=datetime.utcnow)
+    address = Column(String(255), nullable=False)
+
+    posted_by = Column(UUID(as_uuid=True), nullable=False)
+
+    status = Column(String(20), nullable=False, default="AVAILABLE")  
     is_donated = Column(Boolean, default=False)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
