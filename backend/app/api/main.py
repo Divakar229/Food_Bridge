@@ -4,6 +4,7 @@ from backend.app.models.model import Base
 from backend.app.api.database import engine
 from backend.app.routes.user import router as user_router
 from backend.app.routes.food import router as food_router
+from ..routes.admin_auth import router as auth_router
 from backend.app.utils.logger import setup_logging   # ✅ Correct import
 
 setup_logging()   # ✅ Now works
@@ -28,6 +29,8 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(food_router)
+app.include_router(auth_router)
+
 
 
 
