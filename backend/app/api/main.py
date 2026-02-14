@@ -7,6 +7,7 @@ from backend.app.routes.food import router as food_router
 from backend.app.utils.logger import setup_logging   # ✅ Correct import
 from backend.app.routes.admin_auth import router as auth_router
 from backend.app.routes.claim import router as claim_router
+from ..routes.HPins import router as HungerPins_router
 setup_logging()   # ✅ Now works
 
 
@@ -31,6 +32,7 @@ app.include_router(user_router)
 app.include_router(food_router)
 app.include_router(auth_router)
 app.include_router(claim_router)
+app.include_router(HungerPins_router)
 
 
 

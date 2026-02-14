@@ -18,6 +18,7 @@ class User(Base):
 
     # Relationship to Admin
     admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
+    hunger_pins = relationship("HungerPin", back_populates="pinned_by")
 
 
 class FoodPost(Base):
