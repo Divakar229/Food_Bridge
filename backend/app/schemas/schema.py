@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Literal
+from typing import Literal,Optional
 
 
 class CustomBaseModel(BaseModel):
@@ -22,6 +22,7 @@ class UserResponse(CustomBaseModel):
     role: Literal["DONOR", "FOUNDATION", "RECEIVER"]
     phone: str
     created_at: datetime
+    admin_id: int
 
 
 class FoodCreate(CustomBaseModel):

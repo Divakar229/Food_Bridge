@@ -18,4 +18,4 @@ def db_dependency():
     try:
         yield db   #yield pause the function (waits and give a session or the api route)
     finally:
-        db.close
+        db.close()

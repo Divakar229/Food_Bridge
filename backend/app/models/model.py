@@ -1,19 +1,23 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean,ForeignKey
-from sqlalchemy.orm import declarative_base,Mapped,mapped_column
+from sqlalchemy.orm import declarative_base,Mapped,mapped_column,relationship
 from datetime import datetime
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
+
+
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    admin_id: Mapped[int] = mapped_column(Integer, ForeignKey("admins.id"),unique=True)
+
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     role: Mapped[str] = mapped_column(String(50), nullable=False)
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+    # Relationship to Admin
+    admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
 
 
 class FoodPost(Base):

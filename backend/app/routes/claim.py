@@ -18,8 +18,8 @@ router = APIRouter(
 @router.post("/{food_id}")
 def claim_food(food_id: int,
                db: db_depends,
-               current_user = Depends(get_current_admin)):
-    profile = db.query(User).filter(User.id == current_user.user_id).first()
+               current_admin= Depends(get_current_admin)):
+    profile = current_admin.user
     if not profile:
         raise HTTPException(status_code=404, detail="Admin profile not found")
     # 1️⃣ Only FOUNDATION can claim
