@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 import logging
 
 from backend.app.api.database import db_dependency
-from backend.app.schemas.schema import User as UserSchema
-from backend.app.curd import crud_user 
+from backend.app.schemas.schema import UserCreate as UserSchema
+from backend.app.crud import crud_user 
+from backend.app.core.dependencies import get_current_admin
 from typing import Annotated
 
 db_depends=Annotated[Session,Depends(db_dependency)]
@@ -17,9 +18,9 @@ router=APIRouter(
 )
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
-def createUser(user:UserSchema,db:db_depends):
+def createUser(user:UserSchema,db:db_depends,admin=Depends(get_current_admin)):
     logger.info("creating new user")
-
+    logger.info(f"Admin{admin.email} is creating a new user :{user.name}")
     return crud_user.createUser(db,user)
 
 

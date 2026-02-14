@@ -5,7 +5,7 @@ from datetime import timedelta
 #OAuth2 → Standard way of doing login + token generation
 from backend.app.schemas.admin_auth import AdminCreate, AdminResponse, Token
 from backend.app.api.database import db_dependency
-from ..curd.curd_admin import get_admin_by_email, create_admin
+from ..crud.crud_admin import get_admin_by_email, create_admin
 from backend.app.core.security import (
     hash_password,
     verify_pass,

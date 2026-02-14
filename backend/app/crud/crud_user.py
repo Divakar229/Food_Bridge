@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from ..models.model import User
-from ..schemas.schema import User as UserSchema
+from ..schemas.schema import UserCreate as UserSchema
 
 ## josn(in frontend)-->pydantic model(by fastapi)--->dict-->sqlalchemy model
 def createUser(db:Session,user:UserSchema,):

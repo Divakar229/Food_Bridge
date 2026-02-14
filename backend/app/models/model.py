@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, Float, DateTime, Boolean,ForeignKey
+from sqlalchemy.orm import declarative_base,Mapped,mapped_column
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -8,26 +8,38 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "user"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    name = Column(String(100), nullable=False)
-    role = Column(String(50), nullable=False)
-    phone = Column(String(20), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
+    role: Mapped[str] = mapped_column(String(50), nullable=False)
+    phone: Mapped[str] = mapped_column(String(20), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
 
 
 class FoodPost(Base):
     __tablename__ = "foodpost"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), unique=True, index=True, nullable=False)
+    title = Column(String(100), nullable=False)
     quantity = Column(Integer, nullable=False)
+
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     address = Column(String(255), nullable=False)
 
-    posted_by = Column(UUID(as_uuid=True), nullable=False)
-
-    status = Column(String(20), nullable=False, default="AVAILABLE")  
-    is_donated = Column(Boolean, default=False)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    status = Column(String(20), default="AVAILABLE")
 
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class Claim(Base):
+    __tablename__="claim"
+
+    id:Mapped[int]=mapped_column(Integer,primary_key=True,index=True)
+
+    food_id:Mapped[int]=mapped_column(Integer,ForeignKey("foodpost.id"))
+    user_id:Mapped[int]=mapped_column(Integer,ForeignKey("user.id"))
+
+    status:Mapped[str]=mapped_column(String,default="CLAIMED")
+
+    claimed_at:Mapped[datetime]=mapped_column(DateTime,default=datetime.utcnow)
