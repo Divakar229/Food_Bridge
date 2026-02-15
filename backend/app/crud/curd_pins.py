@@ -1,5 +1,10 @@
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 from sqlalchemy.orm import Session
+from datetime import timedelta,datetime
+from sqlalchemy import or_,and_
+
+
+
 from ..schemas import HungerPins
 from ..models.hungerPins import HungerPin as HP
 import logging
@@ -19,4 +24,73 @@ def point_pin(db:Session,pin:HungerPins.HungerPinCreate):
     logger.info(f"created a hunger pin at address:{pin.address}")
     return hpin
 
+def get_pins(db:Session):
+    return db.query(HP).all()
+
+def get_pin(pin_id: int, db: Session):
+    pin = db.query(HP).filter(HP.id == pin_id).first()
+    if not pin:
+        raise HTTPException(status_code=404, detail="Pin not found")
+    return pin
+
+
+def like_pin(pid_id:int,db:Session):
+    pin=db.query(HP).filter(HP.id==pid_id).first()
+    if not pin:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="pin not found"
+        )
+    pin.likes += 1
+    db.add(pin)
+    db.commit()
+    db.refresh(pin)
+    return pin
+
+def delete_pin(pid_id:int,db:Session):
+    pin=db.query(HP).filter(HP.id==pid_id).first()
+    if not pin:
+        raise HTTPException(status_code=404, detail="Pin not found")
+    db.delete(pin)
+    db.commit()
+    return {"detail":"pin deleted successfully"}
+
+def update_status(pin_id: int, db: Session, resolved: bool = None, served: bool = None):
+    pin = db.query(HP).filter(HP.id == pin_id).first()
+    if not pin:
+        raise HTTPException(status_code=404, detail="Pin not found")
+
+    if resolved is None and served is None:
+        raise HTTPException(status_code=400, detail="No status provided")
+
+    if resolved:
+        if pin.resolved:
+            raise HTTPException(status_code=400, detail="Already resolved")
+        pin.resolved = True
+        pin.resolved_at = datetime.utcnow()
+
+    if served:
+        if pin.served:
+            raise HTTPException(status_code=400, detail="Already served")
+        pin.served = True
+        pin.served_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(pin)
+    return pin
+
+def clean_old_pins(db: Session):
+    cutoff = datetime.utcnow() - timedelta(minutes=2)
+
+    old_pins = db.query(HP).filter(
+        or_(
+            and_(HP.resolved == True, HP.resolved_at <= cutoff),
+            and_(HP.served == True, HP.served_at <= cutoff)
+        )
+    ).all()
+
+    for pin in old_pins:
+        db.delete(pin)
+
+    db.commit()
     

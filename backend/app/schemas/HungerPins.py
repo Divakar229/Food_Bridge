@@ -18,13 +18,15 @@ class HungerPinAction(BaseModel):
 # Response schema
 class HungerPinResponse(BaseModel):
     id: int
-    pinned_by_id: Optional[int]
     address: str
     description: Optional[str]
     likes: int
-    served: int
+    served: bool
     resolved: bool
-    timestamp: datetime
+    created_at: datetime
+    resolved_at: Optional[datetime]
+    served_at: Optional[datetime]
+
 
     class Config:
         from_atrributes=True
