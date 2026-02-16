@@ -7,22 +7,45 @@ from sqlalchemy import or_,and_
 
 from ..schemas import HungerPins
 from ..models.hungerPins import HungerPin as HP
+from ..models.model import User
 import logging
 
 logger=logging.getLogger(__name__)
 
 
-
-def point_pin(db:Session,pin:HungerPins.HungerPinCreate):
-    existing_pin = db.query(HP).filter(HP.address==pin.address).first()
+def point_pin(pin: HungerPins.HungerPinCreate, db, admin_id: int):
+    existing_pin = db.query(HP).filter(HP.address == pin.address).first()
     if existing_pin:
         raise HTTPException(status_code=400, detail="Hunger pin already located")
-    hpin=HP(**pin.dict())
+
+    hpin = HP(**pin.dict())
     db.add(hpin)
+
+    # find the user whose admin_id matches current admin
+    user = db.query(User).filter(User.admin_id == admin_id).first()
+    if user:
+        user.points += 2
+
     db.commit()
     db.refresh(hpin)
-    logger.info(f"created a hunger pin at address:{pin.address}")
     return hpin
+
+# def point_pin(pin: HungerPins.HungerPinCreate,db):
+#     existing_pin = db.query(HP).filter(HP.address == pin.address).first()
+#     if existing_pin:
+#         raise HTTPException(status_code=400, detail="Hunger pin already located")
+
+#     hpin = HP(**pin.dict())
+#     db.add(hpin)
+
+#     # existing_user = db.query(User).filter(User.admin_id == admin_id).first()
+#     # if existing_user:
+#     #     existing_user.points += 2
+#     db.commit()
+#     db.refresh(hpin)
+#     return hpin
+
+
 
 def get_pins(db:Session):
     return db.query(HP).all()

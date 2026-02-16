@@ -23,6 +23,7 @@ class UserResponse(CustomBaseModel):
     phone: str
     created_at: datetime
     admin_id: int
+    points:int
 
 
 class FoodCreate(CustomBaseModel):

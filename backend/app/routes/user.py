@@ -21,7 +21,7 @@ router=APIRouter(
 def createUser(user:UserSchema,db:db_depends,admin=Depends(get_current_admin)):
     logger.info("creating new user")
     logger.info(f"Admin{admin.email} is creating a new user :{user.name}")
-    return crud_user.createUser(db,user,admin)
+    return crud_user.createUser(db,user,admin.id)
 
 
 @router.get("/role/{role}")

@@ -2,8 +2,9 @@ from fastapi import Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
 from sqlalchemy.orm import Session
+from typing import Optional
 
-
+from ..models.model import User
 from backend.app.api.database import db_dependency
 from backend.app.core.security import decode_token
 from ..crud.crud_admin import get_admin_by_id
@@ -11,27 +12,29 @@ from ..crud.crud_admin import get_admin_by_id
 oauth2_scheme=OAuth2PasswordBearer(tokenUrl='/admin/token')
 
 
-def get_current_admin(token:str=Depends(oauth2_scheme),
-                      db:Session=Depends(db_dependency)):
+def get_current_admin(token: str = Depends(oauth2_scheme),
+                      db: Session = Depends(db_dependency)):
     try:
-        playload=decode_token(token)
-        admin_id=playload.get("id")
+        payload = decode_token(token)
+        admin_id = payload.get("id")
 
         if admin_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="invalid token"
+                detail="Invalid token"
             )
-        admin=get_admin_by_id(db,admin_id)
+
+        admin = get_admin_by_id(db, admin_id)
 
         if not admin:
-             raise HTTPException(
+            raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="admin not found"
+                detail="Admin not found"
             )
+
         return admin
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="could not validate token"
+            detail="Could not validate token"
         )

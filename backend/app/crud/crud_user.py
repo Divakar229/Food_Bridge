@@ -14,8 +14,6 @@ def createUser(db:Session,user:UserSchema,admin):
     db.refresh(data)
     return data
 
-
-
 def getRole(db:Session,role:str):
     return db.query(User).filter(User.role==role).all()
 

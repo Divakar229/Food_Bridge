@@ -15,10 +15,12 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(50), nullable=False)
     phone: Mapped[str] = mapped_column(String(20), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    points = Column(Integer, default=0)
 
     # Relationship to Admin
     admin: Mapped["Admin"] = relationship("Admin", back_populates="user")
     hunger_pins = relationship("HungerPin", back_populates="pinned_by")
+
 
 
 class FoodPost(Base):
