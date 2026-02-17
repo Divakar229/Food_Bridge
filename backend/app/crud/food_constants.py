@@ -52,3 +52,6 @@ def get_food_type(item_name: str) -> str:
             if i in item_name:  # partial match to cover "veg pizza", "cheese sandwich"
                 return food_type
     return "other"
+
+
+

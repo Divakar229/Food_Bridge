@@ -30,20 +30,7 @@ def point_pin(pin: HungerPins.HungerPinCreate, db, admin_id: int):
     db.refresh(hpin)
     return hpin
 
-# def point_pin(pin: HungerPins.HungerPinCreate,db):
-#     existing_pin = db.query(HP).filter(HP.address == pin.address).first()
-#     if existing_pin:
-#         raise HTTPException(status_code=400, detail="Hunger pin already located")
 
-#     hpin = HP(**pin.dict())
-#     db.add(hpin)
-
-#     # existing_user = db.query(User).filter(User.admin_id == admin_id).first()
-#     # if existing_user:
-#     #     existing_user.points += 2
-#     db.commit()
-#     db.refresh(hpin)
-#     return hpin
 
 
 
@@ -116,4 +103,18 @@ def clean_old_pins(db: Session):
         db.delete(pin)
 
     db.commit()
+
+
+def get_leaderboard(db: Session, page: int = 1, limit: int = 10):
+    offset = (page - 1) * limit 
+    users = (
+        db.query(User)
+        .order_by(User.points.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    
+    return users
+
     

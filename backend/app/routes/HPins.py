@@ -22,18 +22,9 @@ def createpin(
     admin: Admin = Depends(get_current_admin)  # <-- THIS ADDS LOCK ICON
 ):
     return curd_pins.point_pin(pin, db, admin.id)
-
-# @router.post("/",status_code=status.HTTP_201_CREATED)
-# def createpin(pin:HungerPinCreate,db:db_depends):
-#     logger.info("creating new pin")
-#     return curd_pins.point_pin(pin,db)
-# @router.post("/", status_code=status.HTTP_201_CREATED, response_model=HungerPinResponse)
-# def create_pin(
-#     pin: HungerPinCreate,
-#     db: db_depends,
-#     admin = Depends(get_current_admin)
-# ):
-#     return curd_pins.point_pin(db, pin, admin.id)
+@router.get("/leaderboard")
+def leaderboard(db: db_depends,page: int = 1, limit: int = 10):
+    return curd_pins.get_leaderboard(db, page, limit)
 
 @router.get("/", response_model=List[HungerPinResponse])
 def get_pins(db: db_depends):
@@ -61,7 +52,5 @@ def like_pin(pin_id: int, db: db_depends):  # user_id from auth ideally
 @router.delete("/{pin_id}", response_model=None)
 def delete_pin(pin_id: int, db: db_depends):
     return curd_pins.delete_pin(pin_id,db)
-
-
 
 
