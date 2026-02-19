@@ -3,7 +3,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full z-50 
-  bg-white/[0.05] backdrop-blur-xl backdrop-saturate-150 
+  bg-white/80 backdrop-blur-xl backdrop-saturate-150 
   border-b border-white/10 shadow-lg">
   {/* Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">

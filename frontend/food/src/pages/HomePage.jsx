@@ -1,7 +1,12 @@
 import Navbar from "../components/Navbar"
-function HomePage(){
-    return<>
-    <Navbar/>
+import HeroSection from "../components/HeroSection"
+const HomePage = () => {
+  return (
+    <>
+      <Navbar />
+      <HeroSection/>
     </>
-}
-export default HomePage
+  );
+};
+
+export default HomePage;
